@@ -1,0 +1,81 @@
+.App {
+  text-align: center;
+}
+
+
+.App-header {
+  background-color: #222;
+  height: 50px;
+  padding: 20px;
+  color: white;
+  margin-bottom: 40px;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+
+.Model {
+  font-size: 18pt;
+  font-weight: bold;
+  font-family: 'Consolas';
+}
+
+.Writer {
+  width: 500px;
+}
+
+.green {
+  color: darkgray;
+}
+
+.black {
+  color: black;
+}
+
+button {
+  margin: 5px;
+}
+
+.devButtons {
+  margin-top: 60px;
+}
+
+.example-enter {
+  opacity: 0.01;
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}
+
+.example-leave {
+  opacity: 1;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+  transition: opacity .8s ease-in;
+}
+
+.fix-model {
+  height: 60px;
+}
+
+/* je to dostatočne Ok */
+
+.model-leave {
+  opacity: 0.01;
+  transition: opacity .2s ease,
+}
+
+.writer-leave {
+  color: #fff;
+  transition: color .2s ease-out,
+}
