@@ -3,6 +3,7 @@ import Tester from './tester';
 import {APP_SCREENS} from '../config/settings'
 import update from 'immutability-helper';
 import ReactPokusy from './react_pokusy';
+import fire from '../config/fire';
 
 class Collector extends React.Component {
 
@@ -10,7 +11,7 @@ class Collector extends React.Component {
     super();
     this.state = {
       // User
-      email: '',
+      emailInput: '',
       user: {
         userTimes: {},
         userStrokes: {},
@@ -43,16 +44,30 @@ class Collector extends React.Component {
       appScreen: (this.state.appScreen + N - 1) % N
     })
   }
+
+  addEmail = () => {
+    fire.database().ref('emails').push(this.state.emailInput);
+    this.setState({emailInput: ''});
+  }
+
+  handleEmailChange = (e) => {
+    this.setState({emailInput: e.target.value});
+  }
   
   render() {
-    const {appScreen} = this.state;
+    const {appScreen, emailInput} = this.state;
     return (
       <div>
         {appScreen === APP_SCREENS.EMAIL_SCREEN &&
           <div>
             <h3>EMAIL SCREEN</h3>
-            <input />
-            <button>Submit</button>
+            <input
+              onChange={this.handleEmailChange}
+              type="text"
+              spellCheck={false}
+              value={emailInput}
+            />
+            <button onClick={this.addEmail}>Submit</button>
           </div>
         }
         {appScreen === APP_SCREENS.TESTER_SCREEN &&

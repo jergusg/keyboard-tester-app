@@ -50,5 +50,4 @@ export const testingSet = {
 };
 
 export const WARMUP_ROUNDS_NUM = testingSet.warmup.length;
-
 export const REAL_ROUNDS_NUM = testingSet.real.length;

@@ -5,6 +5,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "diff": "^3.5.0",
+    "firebase": "^4.12.0",
     "immutability-helper": "^2.6.6",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
