@@ -4,6 +4,7 @@ import {APP_SCREENS} from '../config/settings'
 import update from 'immutability-helper';
 import ReactPokusy from './react_pokusy';
 import fire from '../config/fire';
+import firebase from 'firebase';
 
 class Collector extends React.Component {
 
@@ -13,22 +14,30 @@ class Collector extends React.Component {
       // User
       emailInput: '',
       user: {
-        userTimes: {},
-        userStrokes: {},
+        userTimes: [],
+        userStrokes: [],
       },
+      userKey: 'dummy-key',
+      setNumber: 0,
       // Dashboard
       appScreen: APP_SCREENS.EMAIL_SCREEN,
+
     }
   }
 
-  updateUserData = (roundNum, timesVector, strokesVector) => {
+  updateUserData = (roundNum, timesVector, strokesVector, lastRound) => {
     this.setState((prevState) =>
       update(prevState, {
       user: {
-        userTimes: {[roundNum]: {$set: timesVector}},
-        userStrokes: {[roundNum]: {$set: strokesVector}},
-      }})
-    );
+        userTimes: {$push: [timesVector]},
+        userStrokes: {$push: [strokesVector]},
+      }}),
+    lastRound ? this.uploadRounds : () => {});
+  }
+
+  uploadRounds = () => {
+    const {userKey, user} = this.state;
+    fire.database().ref('usersT1/' + userKey).update(user);
   }
 
   screenNext = () => {
@@ -46,7 +55,20 @@ class Collector extends React.Component {
   }
 
   addEmail = () => {
-    fire.database().ref('emails').push(this.state.emailInput);
+    const userEmail = this.state.emailInput;
+    const userKey = fire.database().ref().child('usersT1').push().key;
+    this.setState({userKey: userKey});
+    var userData = {
+      email: userEmail,
+      timestamp: firebase.database.ServerValue.TIMESTAMP,
+    };
+    fire.database().ref('usersT1/' + userKey).update(userData)
+    .then(() => {
+      this.setState({appScreen: APP_SCREENS.TESTER_SCREEN});
+    })
+    .catch((err) => {
+      console.log(err);
+    })
     this.setState({emailInput: ''});
   }
 
@@ -56,6 +78,7 @@ class Collector extends React.Component {
   
   render() {
     const {appScreen, emailInput} = this.state;
+    const {testingSets} = this.props;
     return (
       <div>
         {appScreen === APP_SCREENS.EMAIL_SCREEN &&
@@ -71,7 +94,7 @@ class Collector extends React.Component {
           </div>
         }
         {appScreen === APP_SCREENS.TESTER_SCREEN &&
-          <Tester updateUserData={this.updateUserData} />
+          <Tester updateUserData={this.updateUserData} testingSet={testingSets[0]} />
         }
         {appScreen === APP_SCREENS.FINISH_SCREEN &&
           <div>
