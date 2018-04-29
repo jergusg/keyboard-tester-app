@@ -94,7 +94,7 @@ class Collector extends React.Component {
           </div>
         }
         {appScreen === APP_SCREENS.TESTER_SCREEN &&
-          <Tester updateUserData={this.updateUserData} testingSet={testingSets[0]} />
+          <Tester updateUserData={this.updateUserData} testingSet={testingSets[0]} testingSets={testingSets} />
         }
         {appScreen === APP_SCREENS.FINISH_SCREEN &&
           <div>

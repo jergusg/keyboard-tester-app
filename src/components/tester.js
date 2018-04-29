@@ -9,6 +9,7 @@ class Tester extends React.Component {
     super();
     this.state = {
       testerState: T_STATES.NEW,
+      testingSetNum: 0,
     };
   }
 
@@ -20,7 +21,7 @@ class Tester extends React.Component {
     this.setState({
       testerState: T_STATES.ROUND_PREPARED,
       roundNum: nextRound,
-      sentenceNum: 0,
+      sentenceNum: -1,
       inputText: '',
       inputStrokes: 0,
       timesVector: [],
@@ -30,11 +31,10 @@ class Tester extends React.Component {
     });
   }
 
-  runNextRound = () => {
-    this.setState({   
-      testerState: T_STATES.RUNNING,
-      startTimePoint: Date.now(),
-    })
+  prepareNextSet() {
+    this.setState((prevState) => ({
+      testingSetNum: prevState.testingSetNum + 1,
+    }), () => this.prepareNextRound(0))
   }
 
   handleChange = (e) => {
@@ -49,18 +49,17 @@ class Tester extends React.Component {
       strokesVector,
       modelSentence,
     } = this.state;
-    const {testingSet} = this.props;
+    const testingSet = this.props.testingSets[this.state.testingSetNum];
     if (testerState !== T_STATES.RUNNING) return;
     const newInputText = e.target.value;
     console.log('handleChange: ' + newInputText);
     const allSentences = testingSet.set[roundNum].length;
     const textLengthDiff = newInputText.length - inputText.length;
     const newStrokes = (textLengthDiff > 0) ? inputStrokes + 1 : inputStrokes;
-    // if (textLengthDiff > 1) {
-    //   // Ctrl-V: Bad Thing
-    //   console.log("Cheat!");
-    //   return;
-    // }
+    if (textLengthDiff > 1) {
+      // console.log("Cheat!"); // Ctrl-V: Bad Thing
+      // return;
+    }
     this.setState({
       inputText: newInputText,
       inputStrokes: newStrokes,
@@ -77,7 +76,7 @@ class Tester extends React.Component {
       // Finished Last Sentence
       if (sentenceNum + 1 === allSentences) {
         this.setState({testerState: T_STATES.ROUND_PROCESSING}, this.finishRound)
-      } else {
+      } else { // Next sentence
         e.target.selectionStart = 0;
         e.target.selectionEnd = 0;
         this.setState({
@@ -90,39 +89,40 @@ class Tester extends React.Component {
 
   nextSentence = () => {
     console.log('Next sentence');
-    this.setState((prevState) => { return {
+    const testingSet = this.props.testingSets[this.state.testingSetNum];
+    this.setState((prevState) => ({
       testerState: T_STATES.RUNNING,
       sentenceNum: prevState.sentenceNum + 1,
-      modelSentence: this.props.testingSet.set[prevState.roundNum][prevState.sentenceNum + 1],
+      modelSentence: testingSet.set[prevState.roundNum][prevState.sentenceNum + 1],
       startTimePoint: Date.now(),
       inputText: '',
       inputStrokes: 0,
       modelLeaveClass: false,
-    }});
+    }));
   }
 
   finishRound() {
+    const testingSet = this.props.testingSets[this.state.testingSetNum];
     const {
       roundNum,
       timesVector,
       strokesVector,
+      testingSetNum,
     } = this.state;
-    const REAL_ROUNDS_NUM = this.props.testingSet.set.length;
+    const REAL_ROUNDS_NUM = testingSet.set.length;
     this.props.updateUserData(roundNum, timesVector, strokesVector, !(roundNum < REAL_ROUNDS_NUM - 1));
     if (roundNum < REAL_ROUNDS_NUM - 1) {
       this.prepareNextRound(roundNum + 1);
     } else {
-      this.setState({
-        testerState: T_STATES.ALL_FINISHED,
-      });
+      if (testingSetNum + 1 < this.props.testingSets.length) {
+        this.prepareNextSet()
+      } else {
+        this.setState({
+          testerState: T_STATES.ALL_FINISHED,
+        });
+      }
     }
   }
-
-  // Physical Keys
-  // handleKeyDown = (e) => {
-  //   const vector = [e.key, e.charCode, e.keyCode, e.which];
-  //   this.setState({keySequence: this.state.sequence.concat([e.key])})
-  // }
 
   render() {
     const {
@@ -132,10 +132,11 @@ class Tester extends React.Component {
       modelSentence,
       modelLeaveClass,
     } = this.state;
-    const {testingSet} = this.props;
+    const testingSet = this.props.testingSets[this.state.testingSetNum];
 
     return (
       <div>
+        <h2>Testing set: {this.state.testingSetNum}</h2>
         <h3>Round: {roundNum}</h3>
         {(testerState === T_STATES.RUNNING || testerState === T_STATES.DELAYING)  &&
           <div>
@@ -166,7 +167,7 @@ class Tester extends React.Component {
                 {testingSet.introduction}
               </div>
             }
-            <button onClick={this.runNextRound}>Start</button>
+            <button onClick={this.nextSentence}>Start</button>
           </div>
         }
         {testerState === T_STATES.ALL_FINISHED &&
