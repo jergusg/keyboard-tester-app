@@ -2,6 +2,7 @@ import React from "react";
 import {diffChars} from 'diff';
 import {T_STATES} from '../config/settings';
 import classNames from 'classnames';
+import update from 'immutability-helper';
 
 
 class Tester extends React.Component {
@@ -10,12 +11,25 @@ class Tester extends React.Component {
     this.state = {
       testerState: T_STATES.NEW,
       testingSetNum: 0,
+      userTestData: {},
     };
   }
 
   componentWillMount() {
     this.prepareNextRound(0);
+    this.setState({
+      userTestData: {
+        setNames: this.props.testingSets.map((set) => set.name),
+        setResults: new Object(this.props.testingSets.map((set) =>
+          ({
+            userTimes: [],
+            userStrokes: [],
+          })
+        ))
+      }
+    });
   }
+
 
   prepareNextRound(nextRound) {
     this.setState({
@@ -26,7 +40,7 @@ class Tester extends React.Component {
       inputStrokes: 0,
       timesVector: [],
       strokesVector: [],
-      modelSentence: this.props.testingSet.set[nextRound][0],
+      modelSentence: '',
       modelLeaveClass: false,
     });
   }
@@ -36,6 +50,21 @@ class Tester extends React.Component {
       testingSetNum: prevState.testingSetNum + 1,
     }), () => this.prepareNextRound(0))
   }
+
+  updateUserData = (timesVector, strokesVector, lastRound) => {
+    const {testingSetNum} = this.state;
+    this.setState((prevState) =>
+      update(prevState, {
+      userTestData: { 
+        setResults: {
+          [testingSetNum] : {
+            userTimes: {$push: [timesVector]},
+            userStrokes: {$push: [strokesVector]},
+          }
+      }}})
+    );
+  }
+
 
   handleChange = (e) => {
     const {
@@ -52,7 +81,6 @@ class Tester extends React.Component {
     const testingSet = this.props.testingSets[this.state.testingSetNum];
     if (testerState !== T_STATES.RUNNING) return;
     const newInputText = e.target.value;
-    console.log('handleChange: ' + newInputText);
     const allSentences = testingSet.set[roundNum].length;
     const textLengthDiff = newInputText.length - inputText.length;
     const newStrokes = (textLengthDiff > 0) ? inputStrokes + 1 : inputStrokes;
@@ -88,7 +116,6 @@ class Tester extends React.Component {
   }
 
   nextSentence = () => {
-    console.log('Next sentence');
     const testingSet = this.props.testingSets[this.state.testingSetNum];
     this.setState((prevState) => ({
       testerState: T_STATES.RUNNING,
@@ -101,6 +128,7 @@ class Tester extends React.Component {
     }));
   }
 
+
   finishRound() {
     const testingSet = this.props.testingSets[this.state.testingSetNum];
     const {
@@ -108,9 +136,10 @@ class Tester extends React.Component {
       timesVector,
       strokesVector,
       testingSetNum,
+      userTestData
     } = this.state;
     const REAL_ROUNDS_NUM = testingSet.set.length;
-    this.props.updateUserData(roundNum, timesVector, strokesVector, !(roundNum < REAL_ROUNDS_NUM - 1));
+    this.updateUserData(timesVector, strokesVector);
     if (roundNum < REAL_ROUNDS_NUM - 1) {
       this.prepareNextRound(roundNum + 1);
     } else {
@@ -118,8 +147,12 @@ class Tester extends React.Component {
         this.prepareNextSet()
       } else {
         this.setState({
-          testerState: T_STATES.ALL_FINISHED,
-        });
+          testerState: T_STATES.ALL_FINISHED},
+          () => {
+            const {userTestData} = this.state;
+            this.props.pushUserData(userTestData)
+          }
+        );
       }
     }
   }

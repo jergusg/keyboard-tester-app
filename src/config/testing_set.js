@@ -1,5 +1,6 @@
 export const testingSets = {
   warmup: {
+    name: 'warmup',
     introduction: 'toto je tréning',
     set: [
     [
@@ -16,6 +17,7 @@ export const testingSets = {
     ]
   ]},
   real: {
+    name: 'real',
     introduction: "Toto teraz je reálna vec",
     set: [
     [

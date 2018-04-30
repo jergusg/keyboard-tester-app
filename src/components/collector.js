@@ -1,6 +1,6 @@
 import React from 'react';
 import Tester from './tester';
-import {APP_SCREENS} from '../config/settings'
+import {APP_SCREENS, TESTING_SESSION} from '../config/settings'
 import update from 'immutability-helper';
 import ReactPokusy from './react_pokusy';
 import fire from '../config/fire';
@@ -13,10 +13,7 @@ class Collector extends React.Component {
     this.state = {
       // User
       emailInput: '',
-      user: {
-        userTimes: [],
-        userStrokes: [],
-      },
+      user: {},
       userKey: 'dummy-key',
       setNumber: 0,
       // Dashboard
@@ -25,19 +22,13 @@ class Collector extends React.Component {
     }
   }
 
-  updateUserData = (roundNum, timesVector, strokesVector, lastRound) => {
-    this.setState((prevState) =>
-      update(prevState, {
-      user: {
-        userTimes: {$push: [timesVector]},
-        userStrokes: {$push: [strokesVector]},
-      }}),
-    lastRound ? this.uploadRounds : () => {});
+  pushUserData = (user) => {
+    this.setState({user: user}, this.uploadUserData)
   }
 
-  uploadRounds = () => {
+  uploadUserData = () => {
     const {userKey, user} = this.state;
-    fire.database().ref('usersT1/' + userKey).update(user);
+    fire.database().ref(TESTING_SESSION + '/' + userKey).update(user);
   }
 
   screenNext = () => {
@@ -62,7 +53,7 @@ class Collector extends React.Component {
       email: userEmail,
       timestamp: firebase.database.ServerValue.TIMESTAMP,
     };
-    fire.database().ref('usersT1/' + userKey).update(userData)
+    fire.database().ref(TESTING_SESSION + '/' + userKey).update(userData)
     .then(() => {
       this.setState({appScreen: APP_SCREENS.TESTER_SCREEN});
     })
@@ -94,7 +85,7 @@ class Collector extends React.Component {
           </div>
         }
         {appScreen === APP_SCREENS.TESTER_SCREEN &&
-          <Tester updateUserData={this.updateUserData} testingSet={testingSets[0]} testingSets={testingSets} />
+          <Tester pushUserData={this.pushUserData} testingSets={testingSets} />
         }
         {appScreen === APP_SCREENS.FINISH_SCREEN &&
           <div>
