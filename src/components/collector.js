@@ -5,6 +5,8 @@ import update from 'immutability-helper';
 import ReactPokusy from './react_pokusy';
 import fire from '../config/fire';
 import firebase from 'firebase';
+import {testingSets} from '../config/testing_set';
+
 
 class Collector extends React.Component {
 
@@ -54,13 +56,10 @@ class Collector extends React.Component {
       timestamp: firebase.database.ServerValue.TIMESTAMP,
     };
     fire.database().ref(TESTING_SESSION + '/' + userKey).update(userData)
-    .then(() => {
-      this.setState({appScreen: APP_SCREENS.TESTER_SCREEN});
-    })
     .catch((err) => {
       console.log(err);
     })
-    this.setState({emailInput: ''});
+    this.setState({appScreen: APP_SCREENS.TESTER_SCREEN});
   }
 
   handleEmailChange = (e) => {
@@ -69,7 +68,6 @@ class Collector extends React.Component {
   
   render() {
     const {appScreen, emailInput} = this.state;
-    const {testingSets} = this.props;
     return (
       <div>
         {appScreen === APP_SCREENS.EMAIL_SCREEN &&
@@ -80,12 +78,15 @@ class Collector extends React.Component {
               type="text"
               spellCheck={false}
               value={emailInput}
+              autoFocus 
             />
             <button onClick={this.addEmail}>Submit</button>
           </div>
         }
         {appScreen === APP_SCREENS.TESTER_SCREEN &&
-          <Tester pushUserData={this.pushUserData} testingSets={testingSets} />
+          <Tester
+            pushUserData={this.pushUserData}
+            testingSets={[testingSets.alternating1]} />
         }
         {appScreen === APP_SCREENS.FINISH_SCREEN &&
           <div>
@@ -98,10 +99,6 @@ class Collector extends React.Component {
             <ReactPokusy />
           </div>
         }
-        <div className="devButtons">
-          <button onClick={this.screenPrev}>Prev</button>
-          <button onClick={this.screenNext}>Next</button>
-        </div>
       </div>
     )
   }

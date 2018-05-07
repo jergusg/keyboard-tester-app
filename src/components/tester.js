@@ -24,6 +24,7 @@ class Tester extends React.Component {
           ({
             userTimes: [],
             userStrokes: [],
+            sentenceLengths: [],
           })
         ))
       }
@@ -51,8 +52,9 @@ class Tester extends React.Component {
     }), () => this.prepareNextRound(0))
   }
 
-  updateUserData = (timesVector, strokesVector, lastRound) => {
-    const {testingSetNum} = this.state;
+  updateUserData = (timesVector, strokesVector) => {
+    const {testingSetNum, roundNum} = this.state;
+    const testingSet = this.props.testingSets[testingSetNum]
     this.setState((prevState) =>
       update(prevState, {
       userTestData: { 
@@ -60,6 +62,9 @@ class Tester extends React.Component {
           [testingSetNum] : {
             userTimes: {$push: [timesVector]},
             userStrokes: {$push: [strokesVector]},
+            sentenceLengths: {$push: [testingSet.set[roundNum].map(
+              (sentence) => sentence.length
+            )]}
           }
       }}})
     );
@@ -77,8 +82,9 @@ class Tester extends React.Component {
       timesVector,
       strokesVector,
       modelSentence,
+      testingSetNum,
     } = this.state;
-    const testingSet = this.props.testingSets[this.state.testingSetNum];
+    const testingSet = this.props.testingSets[testingSetNum];
     if (testerState !== T_STATES.RUNNING) return;
     const newInputText = e.target.value;
     const allSentences = testingSet.set[roundNum].length;
@@ -169,14 +175,19 @@ class Tester extends React.Component {
 
     return (
       <div>
-        <h2>Testing set: {this.state.testingSetNum}</h2>
-        <h3>Round: {roundNum}</h3>
+        {/* <h2>Testing set: {this.state.testingSetNum}</h2> */}
+        <h3>Round: {roundNum} </h3>
+        {testingSet.name==='alternating1' &&
+        <h3>Jazyk:  {roundNum%2===0 ? 'SK' : 'EN'}</h3>}
         {(testerState === T_STATES.RUNNING || testerState === T_STATES.DELAYING)  &&
           <div>
             <div className='fix-model'>
               <p className={classNames({'Model':true, 'model-leave': modelLeaveClass})}>
-                {diffChars(inputText, modelSentence).filter((part) => !part.removed).map((part, id) => {
-                  const color = part.added ? 'black' : 'green';
+                {diffChars(inputText, modelSentence).map((part, id) => {
+                  if (part.removed) {
+                    return  <span key={id} className="badPart">_</span>
+                  }
+                  const color = part.added ? 'black' : 'donePart';
                   return (
                     <span key={id} className={color}>{part.value}</span>
                   )
@@ -190,6 +201,7 @@ class Tester extends React.Component {
               spellCheck={false}
               value={inputText}
               onChange={this.handleChange}
+              autoFocus
             />
           </div>
         }
@@ -200,7 +212,7 @@ class Tester extends React.Component {
                 {testingSet.introduction}
               </div>
             }
-            <button onClick={this.nextSentence}>Start</button>
+            <button autoFocus onClick={this.nextSentence}>Start</button>
           </div>
         }
         {testerState === T_STATES.ALL_FINISHED &&

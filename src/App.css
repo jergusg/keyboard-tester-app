@@ -30,8 +30,14 @@
   width: 500px;
 }
 
-.green {
+.donePart {
   color: darkgray;
+}
+
+.badPart {
+  color: darkred;
+  font-weight: normal;
+  position: absolute;
 }
 
 .black {

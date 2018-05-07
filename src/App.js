@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import Collector from './components/collector';
-import {testingSets} from './config/testing_set';
 
 class App extends Component {
   render() {
@@ -10,7 +9,7 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">Typing Tester</h1>
         </header>
-        <Collector testingSets={[testingSets.warmup, testingSets.real]} />
+        <Collector />
       </div>
     );
   }
