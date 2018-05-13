@@ -1,6 +1,7 @@
 export const testingSets = {
   slovak1: {
     name: 'slovak1',
+    introduction: 'Slovenské rozloženie',
     set: [[
   'job-mud plastic-responsibility',
   'few+extreme section-currency',
@@ -25,6 +26,7 @@ export const testingSets = {
 
   english1: {
     name: 'english1',
+    introduction: 'Anglické rozloženie',
     set: [[
     '"affair" miss-guess spread?',
     'resident_paint "reference" sweet!',
@@ -49,6 +51,7 @@ export const testingSets = {
 
   alternating1: {
     name: 'alternating1',
+    introduction: 'Strieda sa slovenské a anglické rozloženie',
     set: [
 ['(departure) "beautiful" (board) oven!', 'test: friend/actor boring?'],
 ['limit! representative: passenger_diamond', 'designer/chocolate housing: (swing)'],

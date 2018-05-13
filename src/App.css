@@ -23,11 +23,11 @@
 .Model {
   font-size: 18pt;
   font-weight: bold;
-  font-family: 'Consolas';
+  font-family: 'Inconsolata', 'Consolas', monospace;
 }
 
 .Writer {
-  width: 500px;
+  width: 600px;
 }
 
 .donePart {

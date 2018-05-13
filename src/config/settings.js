@@ -1,5 +1,3 @@
-export const TESTING_SESSION = 'session_dev_01'
-
 export const APP_SCREENS = {
   EMAIL_SCREEN: 0,
   TESTER_SCREEN: 1,

@@ -20,13 +20,13 @@ class Tester extends React.Component {
     this.setState({
       userTestData: {
         setNames: this.props.testingSets.map((set) => set.name),
-        setResults: new Object(this.props.testingSets.map((set) =>
+        setResults: this.props.testingSets.map((set) =>
           ({
             userTimes: [],
             userStrokes: [],
             sentenceLengths: [],
           })
-        ))
+        )
       }
     });
   }
@@ -90,9 +90,8 @@ class Tester extends React.Component {
     const allSentences = testingSet.set[roundNum].length;
     const textLengthDiff = newInputText.length - inputText.length;
     const newStrokes = (textLengthDiff > 0) ? inputStrokes + 1 : inputStrokes;
-    if (textLengthDiff > 1) {
-      // console.log("Cheat!"); // Ctrl-V: Bad Thing
-      // return;
+    if (textLengthDiff > 1 && !this.props.develMode) {
+      return;
     }
     this.setState({
       inputText: newInputText,
@@ -142,7 +141,6 @@ class Tester extends React.Component {
       timesVector,
       strokesVector,
       testingSetNum,
-      userTestData
     } = this.state;
     const REAL_ROUNDS_NUM = testingSet.set.length;
     this.updateUserData(timesVector, strokesVector);
@@ -176,8 +174,8 @@ class Tester extends React.Component {
     return (
       <div>
         {/* <h2>Testing set: {this.state.testingSetNum}</h2> */}
-        <h3>Round: {roundNum} </h3>
-        {testingSet.name==='alternating1' &&
+        <h4>round: {roundNum + 1} </h4>
+        {testingSet.name.startsWith('alternating1') &&
         <h3>Jazyk:  {roundNum%2===0 ? 'SK' : 'EN'}</h3>}
         {(testerState === T_STATES.RUNNING || testerState === T_STATES.DELAYING)  &&
           <div>

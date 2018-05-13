@@ -1,7 +1,6 @@
 import React from 'react';
 import Tester from './tester';
-import {APP_SCREENS, TESTING_SESSION} from '../config/settings'
-import update from 'immutability-helper';
+import {APP_SCREENS} from '../config/settings'
 import ReactPokusy from './react_pokusy';
 import fire from '../config/fire';
 import firebase from 'firebase';
@@ -24,13 +23,28 @@ class Collector extends React.Component {
     }
   }
 
+  componentWillMount() {
+    let ourTestingSet = [testingSets.slovak1, testingSets.english1, testingSets.alternating1]
+    let urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('set')) {
+      ourTestingSet = urlParams.getAll('set')
+        .map((name) => testingSets[name])
+        .filter((set) => set !== undefined)
+    }
+    this.setState({
+      ourTestingSet: ourTestingSet,
+      SESSION: urlParams.has('d') ? 'session_DEV' : 'session_EXP',
+      develMode: urlParams.has('d'),
+    })
+  }
+
   pushUserData = (user) => {
     this.setState({user: user}, this.uploadUserData)
   }
 
   uploadUserData = () => {
-    const {userKey, user} = this.state;
-    fire.database().ref(TESTING_SESSION + '/' + userKey).update(user);
+    const {userKey, user, SESSION} = this.state;
+    fire.database().ref(SESSION + '/' + userKey).update(user);
   }
 
   screenNext = () => {
@@ -48,14 +62,14 @@ class Collector extends React.Component {
   }
 
   addEmail = () => {
-    const userEmail = this.state.emailInput;
-    const userKey = fire.database().ref().child('usersT1').push().key;
+    const {emailInput, SESSION} = this.state
+    const userKey = fire.database().ref().child(SESSION).push().key;
     this.setState({userKey: userKey});
     var userData = {
-      email: userEmail,
+      email: emailInput,
       timestamp: firebase.database.ServerValue.TIMESTAMP,
     };
-    fire.database().ref(TESTING_SESSION + '/' + userKey).update(userData)
+    fire.database().ref(SESSION + '/' + userKey).update(userData)
     .catch((err) => {
       console.log(err);
     })
@@ -67,13 +81,15 @@ class Collector extends React.Component {
   }
   
   render() {
-    const {appScreen, emailInput} = this.state;
+    const {appScreen, emailInput, ourTestingSet, develMode} = this.state;
+    
+
     return (
       <div>
         {appScreen === APP_SCREENS.EMAIL_SCREEN &&
           <div>
-            <h3>EMAIL SCREEN</h3>
-            <input
+            <h2>Výskum písania na klávesnici</h2>
+            Email alebo Meno: <input
               onChange={this.handleEmailChange}
               type="text"
               spellCheck={false}
@@ -81,12 +97,15 @@ class Collector extends React.Component {
               autoFocus 
             />
             <button onClick={this.addEmail}>Submit</button>
+            <p>Potrebné pre organizáciu výskumu. Všetky dáta budú použité anonymne.</p>
           </div>
         }
         {appScreen === APP_SCREENS.TESTER_SCREEN &&
           <Tester
             pushUserData={this.pushUserData}
-            testingSets={[testingSets.alternating1]} />
+            testingSets={ourTestingSet}
+            develMode={develMode}
+          />
         }
         {appScreen === APP_SCREENS.FINISH_SCREEN &&
           <div>
