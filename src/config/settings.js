@@ -1,8 +1,9 @@
 export const APP_SCREENS = {
   EMAIL_SCREEN: 0,
   TESTER_SCREEN: 1,
-  FINISH_SCREEN: 2,
-  REACT_POKUSY: 3,
+  QUESTIONNAIRE: 2,
+  FINISH_SCREEN: 3,
+  REACT_POKUSY: 4,
 };
 
 export const T_STATES = {

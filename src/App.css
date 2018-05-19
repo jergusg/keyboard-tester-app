@@ -1,7 +1,32 @@
+/* --- SOME RESET --- */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+ol {
+	padding-left: 1.4em;
+	list-style: decimal;
+}
+ul {
+	padding-left: 1.4em;
+	list-style: square;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* --- RESET --- */
+
+body, p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 155%;
+}
+
 .App {
   text-align: center;
 }
-
 
 .App-header {
   background-color: #222;
@@ -19,11 +44,82 @@
   font-size: large;
 }
 
+.app-content-wrap {
+  width: 700px;
+  margin: 0 auto;
+}
+
+.email-form {
+  margin-top: 50px;
+  font-size: 100%;
+}
+
+.email-form .prompt {
+  font-weight: bold;
+}
+
+.email-form input {
+  font-size: 100%;
+}
+
+.email-form .description {
+  font-size: 90%;
+}
+
+
+.tester__introduction {
+  text-align: left;
+  width: 480px;
+  margin: 0 auto;
+  line-height: 200%;
+}
+
+.likert {
+  display: flex;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+
+.likert--col {
+  justify-content: center;
+  box-orient: vertical;
+  flex-grow: 1;
+  align-items: stretch;
+}
+
+.likert--col>div {
+  min-height: 2.5em;
+  justify-content: center;
+}
+
+table {
+  margin: 0 auto;
+  text-align: left;
+  min-width: 400px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+td, th {
+  border: 1px solid #afafaf;
+  padding: 6px;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #dddddd;
+}
+
+.thank-you {
+  font-size: 20px;
+}
+
 
 .Model {
-  font-size: 18pt;
+  font-size: 24px;
   font-weight: bold;
-  font-family: 'Inconsolata', 'Consolas', monospace;
+  font-family: 'Consolas', 'Inconsolata', monospace;
 }
 
 .Writer {

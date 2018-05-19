@@ -19,14 +19,14 @@ class Tester extends React.Component {
     this.prepareNextRound(0);
     this.setState({
       userTestData: {
-        setNames: this.props.testingSets.map((set) => set.name),
+        testingSetNames: this.props.testingSets.map((set) => set.name),
         setResults: this.props.testingSets.map((set) =>
           ({
             userTimes: [],
             userStrokes: [],
             sentenceLengths: [],
           })
-        )
+        ),
       }
     });
   }
@@ -173,9 +173,8 @@ class Tester extends React.Component {
 
     return (
       <div>
-        {/* <h2>Testing set: {this.state.testingSetNum}</h2> */}
-        <h4>round: {roundNum + 1} </h4>
-        {testingSet.name.startsWith('alternating1') &&
+        {/* <h4>round: {roundNum + 1} </h4> */}
+        {testingSet.name.startsWith('alternating') &&
         <h3>Jazyk:  {roundNum%2===0 ? 'SK' : 'EN'}</h3>}
         {(testerState === T_STATES.RUNNING || testerState === T_STATES.DELAYING)  &&
           <div>
@@ -205,17 +204,21 @@ class Tester extends React.Component {
         }
         {testerState === T_STATES.ROUND_PREPARED &&
           <div>
+            <h3>
+              {testingSet.name.startsWith('intro') ? 'Úvod' : this.state.testingSetNum + '. Sada'}
+            </h3>
             {roundNum === 0 &&
-              <div>
+              <div className="tester__introduction">
                 {testingSet.introduction}
               </div>
             }
-            <button autoFocus onClick={this.nextSentence}>Start</button>
+            <p>Keď budete pripravený stlačte tlačidlo Štart</p>
+            <button onClick={this.nextSentence}>Štart</button>
           </div>
         }
         {testerState === T_STATES.ALL_FINISHED &&
           <div>
-            <h3>Finished</h3>
+            <h3>Loading...</h3>
           </div>
         }
       </div>

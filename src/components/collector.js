@@ -14,17 +14,17 @@ class Collector extends React.Component {
     this.state = {
       // User
       emailInput: '',
-      user: {},
+      userTestData: {},
       userKey: 'dummy-key',
       setNumber: 0,
       // Dashboard
       appScreen: APP_SCREENS.EMAIL_SCREEN,
-
+      score: {speedList: [0,1.1111], errorList: [0,2.323233]},
     }
   }
 
   componentWillMount() {
-    let ourTestingSet = [testingSets.slovak1, testingSets.english1, testingSets.alternating1]
+    let ourTestingSet = [testingSets.intro, testingSets.controlEN, testingSets.controlSW]
     let urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('set')) {
       ourTestingSet = urlParams.getAll('set')
@@ -36,15 +36,46 @@ class Collector extends React.Component {
       SESSION: urlParams.has('d') ? 'session_DEV' : 'session_EXP',
       develMode: urlParams.has('d'),
     })
+
+    if (urlParams.has('screen')) {
+      this.setState({
+        appScreen: Number(urlParams.get('screen')),
+      })
+    }
   }
 
-  pushUserData = (user) => {
-    this.setState({user: user}, this.uploadUserData)
+  pushUserData = (userTestData) => {
+    const score = this.countScore(userTestData.setResults);
+    this.setState({userTestData: userTestData, score: score}, this.uploadUserData)
+  }
+
+  countScore = (setResults) => {
+    const sumReducer = (acc, cur) => acc + cur;
+    const arrayReducer = (a,b) => a.concat(b)
+    let speedList = [];
+    let errorList = [];
+    setResults.forEach((oneSet) => {
+      const totalLength = oneSet.sentenceLengths.reduce(arrayReducer).reduce(sumReducer);
+      const totalTime = oneSet.userTimes.reduce(arrayReducer).reduce(sumReducer);
+      const totalStrokes = oneSet.userStrokes.reduce(arrayReducer).reduce(sumReducer);
+      speedList.push(totalLength / totalTime * 1000);
+      errorList.push(totalStrokes / totalLength - 1)
+    })
+
+    return {speedList, errorList};
+  }
+
+  pushUserAnswer = (userAnswer) => {
+    console.log('pushAnswer');
+    this.setState({userAnswer: userAnswer, appScreen: APP_SCREENS.TESTER_SCREEN});
   }
 
   uploadUserData = () => {
-    const {userKey, user, SESSION} = this.state;
-    fire.database().ref(SESSION + '/' + userKey).update(user);
+    const {userKey, userTestData, score, SESSION} = this.state;
+    fire.database().ref(SESSION + '/' + userKey).update({...userTestData, score})
+      .then((value) => {
+        this.setState({appScreen: APP_SCREENS.FINISH_SCREEN})
+      });
   }
 
   screenNext = () => {
@@ -61,7 +92,7 @@ class Collector extends React.Component {
     })
   }
 
-  addEmail = () => {
+  submitEmail = () => {
     const {emailInput, SESSION} = this.state
     const userKey = fire.database().ref().child(SESSION).push().key;
     this.setState({userKey: userKey});
@@ -73,31 +104,37 @@ class Collector extends React.Component {
     .catch((err) => {
       console.log(err);
     })
-    this.setState({appScreen: APP_SCREENS.TESTER_SCREEN});
+    this.setState({appScreen: APP_SCREENS.QUESTIONNAIRE});
   }
 
   handleEmailChange = (e) => {
     this.setState({emailInput: e.target.value});
   }
+
+
+
   
   render() {
-    const {appScreen, emailInput, ourTestingSet, develMode} = this.state;
-    
+    const {appScreen, emailInput, ourTestingSet, develMode, score} = this.state;
 
     return (
-      <div>
+      <div className="app-content-wrap">
         {appScreen === APP_SCREENS.EMAIL_SCREEN &&
           <div>
             <h2>Výskum písania na klávesnici</h2>
-            Email alebo Meno: <input
-              onChange={this.handleEmailChange}
-              type="text"
-              spellCheck={false}
-              value={emailInput}
-              autoFocus 
-            />
-            <button onClick={this.addEmail}>Submit</button>
-            <p>Potrebné pre organizáciu výskumu. Všetky dáta budú použité anonymne.</p>
+            <p>Výskum je zameraný na prepínanie medzi slovenským a anglickým rozložením klávesnice.</p>
+            <div className="email-form">
+              <span className="prompt">Email alebo Meno: </span>
+              <input
+                onChange={this.handleEmailChange}
+                type="text"
+                spellCheck={false}
+                value={emailInput}
+                autoFocus 
+              />
+              <button onClick={this.submitEmail}>Submit</button>
+              <p className="description">Potrebné pre organizáciu výskumu. Všetky dáta budú použité anonymne.</p>
+            </div>
           </div>
         }
         {appScreen === APP_SCREENS.TESTER_SCREEN &&
@@ -107,22 +144,116 @@ class Collector extends React.Component {
             develMode={develMode}
           />
         }
+        {appScreen === APP_SCREENS.QUESTIONNAIRE &&
+          <Questionnaire
+            pushUserAnswer={this.pushUserAnswer}
+          />
+        }
         {appScreen === APP_SCREENS.FINISH_SCREEN &&
-          <div>
-            <h3>FINISH SCREEN</h3>
-          </div>
+          <FinishResults {...{score}} />
         }
         {appScreen === APP_SCREENS.REACT_POKUSY &&
-          <div>
-            <h3>REACT POKUSY</h3>
-            <ReactPokusy />
-          </div>
+          <ReactPokusy />
         }
       </div>
     )
   }
 }
 
+class Questionnaire extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      answer1: -1,
+    };
+  }
 
+  handleAnswer = (e) => {
+    this.setState({
+      answer1: Number(e.target.value),
+    });
+  }
+  
+  render() {
+    return (
+      <div>
+        <h3>Dotazník</h3>
+        <LikertScale 
+          left="žiadny problém"
+          right="strašne otravné"
+          question="Ako pohodlné je pre vás prepínanie v medzi rozloženiami klávesnice?"
+          userAnswer={this.state.answer1}
+          handleAnswer={this.handleAnswer}
+        />
+        <button onClick={() => {
+          if (this.state.answer1 !== -1) this.props.pushUserAnswer(this.state)}}
+        >Submit</button>
+      </div>
+    );
+  }
+}
+
+const Option = ({number, checkedNumber, handleChange}) => (
+  <label className="likert--col">
+    <div>
+      {number}
+    </div>
+    <div>
+      <input
+        type="radio"
+        value={number}
+        checked={number === checkedNumber}
+        onChange={handleChange}
+      />
+    </div>
+  </label>
+)
+
+const LikertScale = ({left, right, question, userAnswer, handleAnswer}) => {
+  const numbers = [1,2,3,4,5];
+  return (
+    <div>
+      <p className="question">{question}</p>
+      <div className="likert">
+        <div className="likert--col">
+          <div></div><div>{left}</div>
+        </div>
+        {numbers.map((number) =>
+          <Option key={number} number={number} checkedNumber={userAnswer} handleChange={handleAnswer} />
+        )}
+        <div className="likert--col">
+          <div></div><div>{right}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const FinishResults = ({score}) => {
+  console.log(score)
+  let rows = []
+  for (let i = 0; i < score.speedList.length; i++) {
+    rows.push(<tr key={i}>
+      <td>{i}</td>
+      <td>{score.speedList[i].toFixed(2)}</td>
+      <td>{(score.speedList[i]*12).toFixed(2)}</td>
+      <td>{score.errorList[i].toFixed(2)}%</td>
+    </tr>)
+  }
+  return (
+    <div>
+      <h2>Výsledky</h2>
+      <table>
+        <thead>
+          <tr><th>Sada</th><th>Rýchlosť (ch/s)</th><th>Rýchlosť WPM</th><th>Chyba</th></tr>
+        </thead>
+        <tbody>
+          {rows}
+        </tbody>
+      </table>
+      <p className="thank-you">Ďakujeme za účasť!</p>
+    </div>
+  )
+}
 
 export default Collector;
