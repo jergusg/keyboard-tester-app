@@ -237,7 +237,7 @@ const FinishResults = ({score}) => {
       <td>{i}</td>
       <td>{score.speedList[i].toFixed(2)}</td>
       <td>{(score.speedList[i]*12).toFixed(2)}</td>
-      <td>{score.errorList[i].toFixed(2)}%</td>
+      <td>{(score.errorList[i]*100).toFixed(0)}%</td>
     </tr>)
   }
   return (
