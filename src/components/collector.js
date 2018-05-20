@@ -5,6 +5,7 @@ import ReactPokusy from './react_pokusy';
 import fire from '../config/fire';
 import firebase from 'firebase';
 import {testingSets} from '../config/testing_set';
+import Questionnaire from './questionnaire';
 
 
 class Collector extends React.Component {
@@ -16,10 +17,11 @@ class Collector extends React.Component {
       emailInput: '',
       userTestData: {},
       userKey: 'dummy-key',
-      setNumber: 0,
+      userAnswer: {},
+      score: {speedList: [0,3.14], errorList: [0,0.101]},
       // Dashboard
       appScreen: APP_SCREENS.EMAIL_SCREEN,
-      score: {speedList: [0,1.1111], errorList: [0,2.323233]},
+      devMode: false,
     }
   }
 
@@ -34,7 +36,7 @@ class Collector extends React.Component {
     this.setState({
       ourTestingSet: ourTestingSet,
       SESSION: urlParams.has('d') ? 'session_DEV' : 'session_EXP',
-      develMode: urlParams.has('d'),
+      devMode: urlParams.has('d'),
     })
 
     if (urlParams.has('screen')) {
@@ -71,8 +73,8 @@ class Collector extends React.Component {
   }
 
   uploadUserData = () => {
-    const {userKey, userTestData, score, SESSION} = this.state;
-    fire.database().ref(SESSION + '/' + userKey).update({...userTestData, score})
+    const {userKey, userTestData, score, SESSION, userAnswer} = this.state;
+    fire.database().ref(SESSION + '/' + userKey).update({userAnswer, ...userTestData, score})
       .then((value) => {
         this.setState({appScreen: APP_SCREENS.FINISH_SCREEN})
       });
@@ -115,14 +117,14 @@ class Collector extends React.Component {
 
   
   render() {
-    const {appScreen, emailInput, ourTestingSet, develMode, score} = this.state;
+    const {appScreen, emailInput, ourTestingSet, devMode, score} = this.state;
 
     return (
       <div className="app-content-wrap">
         {appScreen === APP_SCREENS.EMAIL_SCREEN &&
           <div>
             <h2>Výskum písania na klávesnici</h2>
-            <p>Výskum je zameraný na prepínanie medzi slovenským a anglickým rozložením klávesnice.</p>
+            <p>Moje meno je Jerguš Greššák a robím výskum zameraný na prepínanie medzi slovenským a anglickým rozložením klávesnice. Testovanie zaberie 15 minút. Prosím, spravte si čas, aby vás nikto nerušil.</p>
             <div className="email-form">
               <span className="prompt">Email alebo Meno: </span>
               <input
@@ -132,8 +134,8 @@ class Collector extends React.Component {
                 value={emailInput}
                 autoFocus 
               />
-              <button onClick={this.submitEmail}>Submit</button>
-              <p className="description">Potrebné pre organizáciu výskumu. Všetky dáta budú použité anonymne.</p>
+              <p className="description">(Potrebné pre organizáciu výskumu. Všetky dáta budú použité anonymne.)</p>
+              <button className='button-next' onClick={this.submitEmail}>Ďalej</button>
             </div>
           </div>
         }
@@ -141,7 +143,7 @@ class Collector extends React.Component {
           <Tester
             pushUserData={this.pushUserData}
             testingSets={ourTestingSet}
-            develMode={develMode}
+            devMode={devMode}
           />
         }
         {appScreen === APP_SCREENS.QUESTIONNAIRE &&
@@ -160,74 +162,6 @@ class Collector extends React.Component {
   }
 }
 
-class Questionnaire extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      answer1: -1,
-    };
-  }
-
-  handleAnswer = (e) => {
-    this.setState({
-      answer1: Number(e.target.value),
-    });
-  }
-  
-  render() {
-    return (
-      <div>
-        <h3>Dotazník</h3>
-        <LikertScale 
-          left="žiadny problém"
-          right="strašne otravné"
-          question="Ako pohodlné je pre vás prepínanie v medzi rozloženiami klávesnice?"
-          userAnswer={this.state.answer1}
-          handleAnswer={this.handleAnswer}
-        />
-        <button onClick={() => {
-          if (this.state.answer1 !== -1) this.props.pushUserAnswer(this.state)}}
-        >Submit</button>
-      </div>
-    );
-  }
-}
-
-const Option = ({number, checkedNumber, handleChange}) => (
-  <label className="likert--col">
-    <div>
-      {number}
-    </div>
-    <div>
-      <input
-        type="radio"
-        value={number}
-        checked={number === checkedNumber}
-        onChange={handleChange}
-      />
-    </div>
-  </label>
-)
-
-const LikertScale = ({left, right, question, userAnswer, handleAnswer}) => {
-  const numbers = [1,2,3,4,5];
-  return (
-    <div>
-      <p className="question">{question}</p>
-      <div className="likert">
-        <div className="likert--col">
-          <div></div><div>{left}</div>
-        </div>
-        {numbers.map((number) =>
-          <Option key={number} number={number} checkedNumber={userAnswer} handleChange={handleAnswer} />
-        )}
-        <div className="likert--col">
-          <div></div><div>{right}</div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 const FinishResults = ({score}) => {
   console.log(score)

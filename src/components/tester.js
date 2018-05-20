@@ -90,7 +90,7 @@ class Tester extends React.Component {
     const allSentences = testingSet.set[roundNum].length;
     const textLengthDiff = newInputText.length - inputText.length;
     const newStrokes = (textLengthDiff > 0) ? inputStrokes + 1 : inputStrokes;
-    if (textLengthDiff > 1 && !this.props.develMode) {
+    if (textLengthDiff > 1 && !this.props.devMode) {
       return;
     }
     this.setState({
@@ -178,8 +178,8 @@ class Tester extends React.Component {
         <h3>Jazyk:  {roundNum%2===0 ? 'SK' : 'EN'}</h3>}
         {(testerState === T_STATES.RUNNING || testerState === T_STATES.DELAYING)  &&
           <div>
-            <div className='fix-model'>
-              <p className={classNames({'Model':true, 'model-leave': modelLeaveClass})}>
+            <div className={classNames('fix-model', {'unselectable': !this.props.devMode})}>
+              <p className={classNames('Model', {'model-leave': modelLeaveClass})}>
                 {diffChars(inputText, modelSentence).map((part, id) => {
                   if (part.removed) {
                     return  <span key={id} className="badPart">_</span>
@@ -205,7 +205,7 @@ class Tester extends React.Component {
         {testerState === T_STATES.ROUND_PREPARED &&
           <div>
             <h3>
-              {testingSet.name.startsWith('intro') ? 'Úvod' : this.state.testingSetNum + '. Sada'}
+              {testingSet.title ? testingSet.title : this.state.testingSetNum + '. Sada'}
             </h3>
             {roundNum === 0 &&
               <div className="tester__introduction">
@@ -213,7 +213,7 @@ class Tester extends React.Component {
               </div>
             }
             <p>Keď budete pripravený stlačte tlačidlo Štart</p>
-            <button onClick={this.nextSentence}>Štart</button>
+            <button className='button-next button-next--start' onClick={this.nextSentence}>Štart</button>
           </div>
         }
         {testerState === T_STATES.ALL_FINISHED &&

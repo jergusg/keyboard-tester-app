@@ -24,6 +24,12 @@ body, p {
   line-height: 155%;
 }
 
+input, textarea, select, button {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  line-height: 140%;
+}
+
 .App {
   text-align: center;
 }
@@ -44,13 +50,15 @@ body, p {
   font-size: large;
 }
 
+/* --- Original end --- */
+
 .app-content-wrap {
   width: 700px;
   margin: 0 auto;
 }
 
 .email-form {
-  margin-top: 50px;
+  margin-top: 35px;
   font-size: 100%;
 }
 
@@ -64,21 +72,45 @@ body, p {
 
 .email-form .description {
   font-size: 90%;
+  margin: 0.5em;
 }
-
 
 .tester__introduction {
   text-align: left;
-  width: 480px;
+  width: 520px;
   margin: 0 auto;
-  line-height: 200%;
+}
+
+.tester__introduction ul {
+  border-radius: 3px;
+  border: 1px solid #d1d1d1;
+  background-color: #f6f6f6;
+  padding: 6px 5px 6px 35px;
+}
+
+.tester__introduction ul li {
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+
+.question {
+  margin-top: 50px;
+}
+
+.question__text {
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.question__input {
+  width: 100%;
 }
 
 .likert {
   display: flex;
   width: 100%;
   margin: 0 auto;
-  max-width: 500px;
+  /* max-width: 500px; */
 }
 
 
@@ -90,7 +122,7 @@ body, p {
 }
 
 .likert--col>div {
-  min-height: 2.5em;
+  min-height: 2em;
   justify-content: center;
 }
 
@@ -115,6 +147,40 @@ tbody tr:nth-child(odd) {
   font-size: 20px;
 }
 
+.button-next {
+  text-transform: uppercase;
+  border: none;
+  -webkit-border-radius: 3;
+  -moz-border-radius: 3;
+  border-radius: 3px;
+  color: #363636;
+  font-size: 17px;
+  font-weight: 500;
+  background: #cacaca;
+  padding: 6px 13px 5px 13px;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 25px;
+}
+
+.button-next:hover {
+  background: #dddddd;
+  text-decoration: none;
+}
+
+.button-next--start {
+  margin: 0px;
+}
+
+.unselectable {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+
+/* --- Old CSS --- */
 
 .Model {
   font-size: 24px;
@@ -138,10 +204,6 @@ tbody tr:nth-child(odd) {
 
 .black {
   color: black;
-}
-
-button {
-  margin: 5px;
 }
 
 .devButtons {
