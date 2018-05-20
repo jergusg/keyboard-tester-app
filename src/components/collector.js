@@ -26,7 +26,7 @@ class Collector extends React.Component {
   }
 
   componentWillMount() {
-    let ourTestingSet = [testingSets.intro, testingSets.controlEN, testingSets.controlSW]
+    let ourTestingSet = [testingSets.intro, testingSets.diacCtrl, testingSets.diacExpr, testingSets.codeCtrl, testingSets.codeExpr]
     let urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('set')) {
       ourTestingSet = urlParams.getAll('set')
