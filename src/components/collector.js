@@ -28,6 +28,9 @@ class Collector extends React.Component {
   componentWillMount() {
     let ourTestingSet = [testingSets.intro, testingSets.diacCtrl, testingSets.diacExpr, testingSets.codeCtrl, testingSets.codeExpr]
     let urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('t')) {
+      ourTestingSet = [testingSets.intro, testingSets.T_diacCtrl, testingSets.T_diacExpr, testingSets.T_codeCtrl, testingSets.T_codeExpr]
+    }
     if (urlParams.has('set')) {
       ourTestingSet = urlParams.getAll('set')
         .map((name) => testingSets[name])

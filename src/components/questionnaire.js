@@ -61,7 +61,7 @@ class Questionnaire extends React.Component {
           handleChange={(e) => this.handleQuestion(e, 'likertSingle')}
         />
         <button className='button-next' onClick={() => {
-          if (this.state.likertComfort !== -1) this.props.pushUserAnswer(this.state)}}
+          if (1 || this.state.likertComfort !== -1) this.props.pushUserAnswer(this.state)}}
         >Ďalej</button>
       </div>
     );
