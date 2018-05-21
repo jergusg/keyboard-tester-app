@@ -7,29 +7,29 @@ const TEXT_intro = <div>
     <li>Na začiatok sa oboznámite s testovačom a prepíšete pár ukážkových viet.</li>
     <li>Ak spravíte chybu, opravte sa. Napísaný text sa musí zhodovať s predlohou.</li>
     <li>Podľa potreby prepínajte medzi rozloženiami klávesnice.</li>
-    <li>Píšte vaším prirodzene rýchlym tempom. Nie pomaly, ale ani nie prehnane rýchlo.</li>
+    <li>Píšte vaším prirodzene rýchlym tempom (nie pomaly, ale ani nie neprirodzene rýchlo)</li>
   </ul>
 </div>
 const TEXT_diacCtrl = <ul>
   <li>Nasleduje merané testovanie</li>
   <li><strong>Prepnite si na anglické rozloženie klávesnice</strong></li>
   <li>Sada obsahuje slovenské slová bez diakritiky</li>
-  <li>Píšte vaším prirodzene rýchlym tempom. Nie pomaly, ale ani nie prehnane rýchlo.</li>
+  <li>Píšte vaším prirodzene rýchlym tempom (nie pomaly, ale ani nie neprirodzene rýchlo)</li>
 </ul>
 const TEXT_diacExpr = <ul>
   <li><strong>Prepnite si na slovenské rozloženie klávesnice</strong></li>
   <li>Nasledujúca sada obsahuje slovenské slová s diakritikou</li>
-  <li>Píšte vaším prirodzene rýchlym tempom. Nie pomaly, ale ani nie prehnane rýchlo.</li>
+  <li>Píšte vaším prirodzene rýchlym tempom (nie pomaly, ale ani nie neprirodzene rýchlo)</li>
 </ul>
 const TEXT_codeCtrl = <ul>
   <li><strong>Prepnite si na anglické rozloženie klávesnice</strong></li>
   <li>Sada obsahuje slovenské slová bez diakritiky a symboly z programovacích jazykov</li>
-  <li>Píšte vaším prirodzene rýchlym tempom. Nie pomaly, ale ani nie prehnane rýchlo.</li>
+  <li>Píšte vaším prirodzene rýchlym tempom (nie pomaly, ale ani nie neprirodzene rýchlo)</li>
 </ul>
 const TEXT_codeExpr = <ul>
   <li><strong>V poslednej sade budete rozloženia klávesnice podľa potreby prepínať</strong></li>
   <li>Sada obsahuje slovenské slová s diakritikou a symboly z programovacích jazykov</li>
-  <li>Píšte vaším prirodzene rýchlym tempom. Nie pomaly, ale ani nie prehnane rýchlo.</li>
+  <li>Píšte vaším prirodzene rýchlym tempom (nie pomaly, ale ani nie neprirodzene rýchlo)</li>
 </ul>
 
 export const testingSets = {
