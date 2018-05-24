@@ -53,8 +53,8 @@ class Tester extends React.Component {
   }
 
   handleKeydown = (e) => {
-    const evCode = e.nativeEvent.key;
-    const evKey = e.nativeEvent.code;
+    const evCode = e.nativeEvent.code;
+    const evKey = e.nativeEvent.key;
     this.setState((pS) => update(pS, {
       keydownCode: {$push: [evCode]},
       keydownKey: {$push: [evKey]},
