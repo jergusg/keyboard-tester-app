@@ -41,7 +41,7 @@ export const testingSets = {
     set: [['vedomosti Internet Jazero dieťa',
     'Preprava <fotografie> futbal !literatura',
     'Video #Bezpecnost "zranenia" Odpoveď',
-    '\\editor Čítanie= vnímanie udrzba']]
+    '\\editor Citanie= vnímanie udrzba']]
   },
   diacCtrl: {
     name: 'diacCtrl',
