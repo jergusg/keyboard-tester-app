@@ -25,6 +25,9 @@ class Tester extends React.Component {
             userTimes: [],
             userStrokes: [],
             sentenceLengths: [],
+            evKeydownCode: [], 
+            evKeydownKey: [],
+            evKeydownTime: [],
           })
         ),
       }
@@ -41,9 +44,23 @@ class Tester extends React.Component {
       inputStrokes: 0,
       timesVector: [],
       strokesVector: [],
+      keydownCodeVector: [], 
+      keydownKeyVector: [],
+      keydownTimeVector: [],
       modelSentence: '',
       modelLeaveClass: false,
     });
+  }
+
+  handleKeydown = (e) => {
+    const evCode = e.nativeEvent.key;
+    const evKey = e.nativeEvent.code;
+    this.setState((pS) => update(pS, {
+      keydownCode: {$push: [evCode]},
+      keydownKey: {$push: [evKey]},
+      keydownTime: {$push: [Date.now() - pS.letterTime]},
+      letterTime: {$set: Date.now()}
+    }))
   }
 
   prepareNextSet() {
@@ -53,7 +70,7 @@ class Tester extends React.Component {
   }
 
   updateUserData = (timesVector, strokesVector) => {
-    const {testingSetNum, roundNum} = this.state;
+    const {testingSetNum, roundNum, keydownCodeVector, keydownKeyVector, keydownTimeVector} = this.state;
     const testingSet = this.props.testingSets[testingSetNum]
     this.setState((prevState) =>
       update(prevState, {
@@ -64,7 +81,10 @@ class Tester extends React.Component {
             userStrokes: {$push: [strokesVector]},
             sentenceLengths: {$push: [testingSet.set[roundNum].map(
               (sentence) => sentence.length
-            )]}
+            )]},
+            evKeydownCode: {$push: [keydownCodeVector]},
+            evKeydownKey: {$push: [keydownKeyVector]},
+            evKeydownTime: {$push: [keydownTimeVector]},
           }
       }}})
     );
@@ -83,6 +103,12 @@ class Tester extends React.Component {
       strokesVector,
       modelSentence,
       testingSetNum,
+      keydownCodeVector,
+      keydownKeyVector,
+      keydownTimeVector,
+      keydownCode,
+      keydownKey,
+      keydownTime,
     } = this.state;
     const testingSet = this.props.testingSets[testingSetNum];
     if (testerState !== T_STATES.RUNNING) return;
@@ -105,6 +131,9 @@ class Tester extends React.Component {
         // Update vectors
         timesVector: timesVector.concat(newTime), 
         strokesVector: strokesVector.concat(newStrokes),
+        keydownCodeVector: keydownCodeVector.concat(keydownCode),
+        keydownKeyVector: keydownKeyVector.concat(keydownKey),
+        keydownTimeVector: keydownTimeVector.concat(keydownTime),
       });
       // Finished Last Sentence
       if (sentenceNum + 1 === allSentences) {
@@ -130,6 +159,10 @@ class Tester extends React.Component {
       inputText: '',
       inputStrokes: 0,
       modelLeaveClass: false,
+      keydownCode: [], 
+      keydownKey: [],
+      keydownTime: [],
+      letterTime: Date.now(),
     }));
   }
 
@@ -198,6 +231,7 @@ class Tester extends React.Component {
               spellCheck={false}
               value={inputText}
               onChange={this.handleChange}
+              onKeyDown={this.handleKeydown}
               autoFocus
             />
           </div>
