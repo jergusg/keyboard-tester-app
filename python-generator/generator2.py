@@ -36,22 +36,22 @@ decorators = [
     lambda x: "[" + x + "]",        
 ]
 
-
+# Final words
 
 words = [
- 'organizácia',   
+ #'organizácia',   
  'schopnosť',
  'rozhodnutie',
- 'prehrávač',
- 'efektívnosť',
+ #'prehrávač',
+ #'efektívnosť',
  'inštrukcia',
  'bývanie',
  'chlieb',
- 'iniciatíva',
+# 'iniciatíva',
  'sloboda',
  'filozofia',
  'príbeh',
- 'vysvetlenie',
+ #'vysvetlenie',
  'recept',
  'aspekt',
  'výsledok',
@@ -59,17 +59,17 @@ words = [
  'pieseň',
  'jednotka', 
  'kapitola',
- 'systém',
+ #'systém',
  'zmätok',
  'spôsob',
  'atmosféra',
  'význam',
  'pamäť',
- 'kreslenie',
+# 'kreslenie',
  'teória',
  'matematika',
  'manažér',
- 'košík',
+ #'košík',
  'riaditeľ',
  'dievča',
  'časopis',
@@ -138,8 +138,8 @@ s1 = only_text(words1, 0)
 s2 = only_text(words2, 1)
 
 words3 = gen_code(words)
-random.seed(11)
+random.seed(2)
 s3 = only_text(random.sample(words3, len(words)), 0)
 
-random.seed(12)
+random.seed(3)
 s4 = only_text(random.sample(words3, len(words)), 1)
