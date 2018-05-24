@@ -97,13 +97,26 @@ class Collector extends React.Component {
     })
   }
 
+  whichBrowser = () => {
+    let sp = navigator.userAgent.split(" ");
+    return sp[sp.length - 1];
+  }
+
   submitEmail = () => {
     const {emailInput, SESSION} = this.state
     const userKey = fire.database().ref().child(SESSION).push().key;
     this.setState({userKey: userKey});
+    let urlParams = new URLSearchParams(window.location.search);
     var userData = {
+      info: {
+        location: window.location.href,
+        navigator: navigator.userAgent,
+        browser: this.whichBrowser(),
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+      },
+      from: urlParams.get('f'),
+      fbKey: userKey,
       email: emailInput,
-      timestamp: firebase.database.ServerValue.TIMESTAMP,
     };
     fire.database().ref(SESSION + '/' + userKey).update(userData)
     .catch((err) => {
@@ -171,7 +184,7 @@ const FinishResults = ({score}) => {
   let rows = []
   for (let i = 0; i < score.speedList.length; i++) {
     rows.push(<tr key={i}>
-      <td>{i}</td>
+      <td>{i}.</td>
       <td>{score.speedList[i].toFixed(2)}</td>
       <td>{(score.speedList[i]*12).toFixed(2)}</td>
       <td>{(score.errorList[i]*100).toFixed(0)}%</td>

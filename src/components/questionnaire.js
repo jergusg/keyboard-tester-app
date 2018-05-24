@@ -25,17 +25,17 @@ class Questionnaire extends React.Component {
         <h3>Dotazník</h3>
         <p>Vyplňte pár otázok ohľadom písania na klávesnici.</p>
         <TextQuestion
-          question={<span>Aké rôzne rozloženia klávesnice používate?<br/> Napríklad: Slovenské (QWERTZ (písmeno Z  je hore)), Slovenské (QWERTY), Anglické (US)</span>}
-          handleQuestion={(e) => this.handleQuestion(e, 'multipleLayouts')}
-          value={this.state.multipleLayouts}
-        />
-        <TextQuestion
-          question="Ktoré rozloženie klávesnice používate najčastejšie - je pre vás najprirodzenejšie?"
+          question={<span>Ktoré rozloženie klávesnice primárne používate? (je pre vás najprirodzenejšie alebo ktoré používate najčastejšie)<br/>Napríklad: Slovenské (QWERTZ (písmeno Z  je hore)), Slovenské (QWERTY), Anglické (US)</span>}
           handleQuestion={(e) => this.handleQuestion(e, 'primaryLayout')}
           value={this.state.primaryLayout}
         />
         <TextQuestion
-          question="Akým spôsobom zvyknete prepínať rozloženia? (myšou, skratkou: Alt+Shift, Win+Space, ...)"
+          question={<span>Aké ďalšie rozloženia klávesnice používate?</span>}
+          handleQuestion={(e) => this.handleQuestion(e, 'multipleLayouts')}
+          value={this.state.multipleLayouts}
+        />
+        <TextQuestion
+          question="Akým spôsobom zvyknete prepínať rozloženia? (vyklikaním myšou, skratkou: Alt+Shift, Win+Space...)"
           handleQuestion={(e) => this.handleQuestion(e, 'shortcut')}
           value={this.state.shortcut}
         />
@@ -49,7 +49,7 @@ class Questionnaire extends React.Component {
         <LikertScale 
           left="nikdy sa nemýlim"
           right="mýlim sa často"
-          question="Zvyknete si pri písaní mýliť písmenká a znaky medzi rôznymi rozloženiami klávesnice?"
+          question="Zvyknete si pri písaní mýliť písmená a znaky medzi rôznymi rozloženiami klávesnice?"
           value={this.state.likertSwitching}
           handleChange={(e) => this.handleQuestion(e, 'likertSwitching')}
         />
