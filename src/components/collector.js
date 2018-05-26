@@ -18,7 +18,7 @@ class Collector extends React.Component {
       userTestData: {},
       userKey: 'dummy-key',
       userAnswer: {},
-      score: {speedList: [0,3.14], errorList: [0,0.101]},
+      score: {speedList: [0,3.14,2.6,3.5,1.2], errorList: [0,0.101,0.24,0.54,0.98]},
       // Dashboard
       appScreen: APP_SCREENS.EMAIL_SCREEN,
       devMode: false,
@@ -104,6 +104,7 @@ class Collector extends React.Component {
 
   submitEmail = () => {
     const {emailInput, SESSION} = this.state
+    if (emailInput === '') return
     const userKey = fire.database().ref().child(SESSION).push().key;
     this.setState({userKey: userKey});
     let urlParams = new URLSearchParams(window.location.search);
@@ -182,9 +183,9 @@ class Collector extends React.Component {
 const FinishResults = ({score}) => {
   console.log(score)
   let rows = []
-  for (let i = 0; i < score.speedList.length; i++) {
+  for (let i = 1; i < score.speedList.length; i++) {
     rows.push(<tr key={i}>
-      <td>{i}.</td>
+      <td>{i}. sada</td>
       <td>{score.speedList[i].toFixed(2)}</td>
       <td>{(score.speedList[i]*12).toFixed(2)}</td>
       <td>{(score.errorList[i]*100).toFixed(0)}%</td>

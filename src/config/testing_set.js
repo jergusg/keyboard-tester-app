@@ -11,24 +11,26 @@ const TEXT_intro = <div>
   </ul>
 </div>
 const TEXT_diacCtrl = <ul>
-  <li>Nasleduje merané testovanie</li>
-  <li><strong>Prepnite si na anglické rozloženie klávesnice</strong></li>
+  <li>To bola ukážka, teraz nasleduje merané testovanie</li>
+  <li><strong>Nastavte anglické rozloženie klávesnice a používajte iba toto rozloženie</strong></li>
   <li>Sada obsahuje slovenské slová bez diakritiky</li>
   <li>Píšte vaším prirodzene rýchlym tempom (nie pomaly, ale ani nie neprirodzene rýchlo)</li>
 </ul>
 const TEXT_diacExpr = <ul>
-  <li><strong>Prepnite si na slovenské rozloženie klávesnice</strong></li>
+  <li><strong>Prepnite si na slovenské rozloženie klávesnice a používajte iba toto rozloženie</strong></li>
   <li>Nasledujúca sada obsahuje slovenské slová s diakritikou</li>
   <li>Píšte vaším prirodzene rýchlym tempom (nie pomaly, ale ani nie neprirodzene rýchlo)</li>
 </ul>
 const TEXT_codeCtrl = <ul>
-  <li><strong>Prepnite si na anglické rozloženie klávesnice</strong></li>
+  <li><strong>Prepnite si na anglické rozloženie klávesnice a používajte iba toto rozloženie</strong></li>
   <li>Sada obsahuje slovenské slová bez diakritiky a symboly z programovacích jazykov</li>
+  <li>Ak prípadne zvyknete používať symboly z numerickej klávesnice, môžete ich používať. Píšte akoby ste bežne písali.</li>
   <li>Píšte vaším prirodzene rýchlym tempom (nie pomaly, ale ani nie neprirodzene rýchlo)</li>
 </ul>
 const TEXT_codeExpr = <ul>
-  <li><strong>V poslednej sade budete rozloženia klávesnice podľa potreby prepínať</strong></li>
+  <li><strong>V poslednej sade budete rozloženia klávesnice ľubovoľne podľa potreby prepínať. Začnite anglickým rozložením.</strong></li>
   <li>Sada obsahuje slovenské slová s diakritikou a symboly z programovacích jazykov</li>
+  <li>Ak prípadne zvyknete používať symboly z numerickej klávesnice, môžete ich používať. Píšte akoby ste bežne písali.</li>
   <li>Píšte vaším prirodzene rýchlym tempom (nie pomaly, ale ani nie neprirodzene rýchlo)</li>
 </ul>
 

@@ -5,11 +5,16 @@ class Questionnaire extends React.Component {
     super();
     this.state = {
       likertComfort: -1,
-      likertSwitching: -1,
+      likertMistake: -1,
       likertSingle: -1,
       multipleLayouts: '',
+      multipleLayoutsBoxes: [],
       primaryLayout: '',
+      primaryLayoutOptions: -1,
       shortcut: '',
+      shortcutBoxes: [],
+      numpad: -1,
+      keyboardCheck: [],
     };
   }
 
@@ -18,27 +23,71 @@ class Questionnaire extends React.Component {
       [statekey]: e.target.value,
     })
   }
+
+  handleTargetChange = (e) => {
+    const target = e.target;
+    const name = target.name;
+    let value = target.value;
+
+    if (target.type === 'checkbox') {
+      if (target.checked) {
+        this.setState((pS) => {
+          let tmpArray = pS[name].slice()
+          tmpArray.push(value)
+          return {[name]: tmpArray}
+        })
+      }
+      else {
+        this.setState((pS) => {
+          let index = pS[name].indexOf(value)
+          let tmpArray = pS[name].slice()
+          tmpArray.splice(index, 1)
+          return {[name]: tmpArray}
+        })
+      }
+    }
+    else {
+      this.setState({
+        [name]: value,
+      });
+    }
+  }
   
   render() {
+    const KEYBOARD_LAYOUTS = ['Slovenské QWERTZ (písmeno Z je hore)', 'Slovenské QWERTY', 'Anglické (US)'];
+    const SHORTCUTS = ['Vyklikaním myšou', 'Alt+Shift', 'Win+Space'];
     return (
       <div>
         <h3>Dotazník</h3>
         <p>Vyplňte pár otázok ohľadom písania na klávesnici.</p>
         <TextQuestion
-          question={<span>Ktoré rozloženie klávesnice primárne používate? (je pre vás najprirodzenejšie alebo ktoré používate najčastejšie)<br/>Napríklad: Slovenské (QWERTZ (písmeno Z  je hore)), Slovenské (QWERTY), Anglické (US)</span>}
+          question={<span>Ktoré rozloženie klávesnice primárne používate? (je pre vás najprirodzenejšie alebo ktoré používate najčastejšie)</span>}
           handleQuestion={(e) => this.handleQuestion(e, 'primaryLayout')}
           value={this.state.primaryLayout}
+          radiooptions={KEYBOARD_LAYOUTS}
+          optionname="primaryLayoutOptions"
+          stateValue={this.state.primaryLayoutOptions}
+          handleTargetChange={this.handleTargetChange}
         />
         <TextQuestion
           question={<span>Aké ďalšie rozloženia klávesnice používate?</span>}
           handleQuestion={(e) => this.handleQuestion(e, 'multipleLayouts')}
           value={this.state.multipleLayouts}
+          checkboxes={KEYBOARD_LAYOUTS}
+          optionname="multipleLayoutsBoxes"
+          stateValue={this.state.multipleLayoutsBoxes}
+          handleTargetChange={this.handleTargetChange}   
         />
         <TextQuestion
-          question="Akým spôsobom zvyknete prepínať rozloženia? (vyklikaním myšou, skratkou: Alt+Shift, Win+Space...)"
+          question="Akým spôsobom zvyknete prepínať rozloženia?"
           handleQuestion={(e) => this.handleQuestion(e, 'shortcut')}
           value={this.state.shortcut}
+          checkboxes={SHORTCUTS}
+          optionname="shortcutBoxes"
+          stateValue={this.state.shortcutBoxes}
+          handleTargetChange={this.handleTargetChange}     
         />
+        <NumPad value={this.state.numpad} handleChange={this.handleTargetChange} />
         <LikertScale 
           left="žiadny problém"
           right="veľmi otravné"
@@ -50,8 +99,8 @@ class Questionnaire extends React.Component {
           left="nikdy sa nemýlim"
           right="mýlim sa často"
           question="Zvyknete si pri písaní mýliť písmená a znaky medzi rôznymi rozloženiami klávesnice?"
-          value={this.state.likertSwitching}
-          handleChange={(e) => this.handleQuestion(e, 'likertSwitching')}
+          value={this.state.likertMistake}
+          handleChange={(e) => this.handleQuestion(e, 'likertMistake')}
         />
         <LikertScale 
           left="určite nie"
@@ -61,27 +110,129 @@ class Questionnaire extends React.Component {
           handleChange={(e) => this.handleQuestion(e, 'likertSingle')}
         />
         <button className='button-next' onClick={() => {
-          if (1 || this.state.likertComfort !== -1) this.props.pushUserAnswer(this.state)}}
+          if (this.state.likertComfort !== -1 && this.state.likertSingle !== -1 && this.state.likertMistake !==-1) this.props.pushUserAnswer(this.state)}}
         >Ďalej</button>
       </div>
     );
   }
 }
 
-const TextQuestion = ({question, value, handleQuestion}) => {
+
+
+
+const TextQuestion = ({question, value, handleQuestion, checkboxes, radiooptions, optionname, stateValue, handleTargetChange}) => {
   return (
     <div className='question'>
       <p className="question__text">{question}</p>
-      <input
+      {checkboxes &&
+        <CheckBoxes options={checkboxes} handleChange={handleTargetChange} name={optionname} stateValue={stateValue} />
+      }
+      {radiooptions &&
+        <RadioOptions options={radiooptions} handleChange={handleTargetChange} name={optionname} stateValue={stateValue} />
+      }
+      Iné: <input
         className="question__input"
         onChange={handleQuestion}
         type="text"
         spellCheck={false}
-        value={value} 
+        value={value}
       />
     </div>
   )
 }
+
+
+
+const CheckBoxOption = ({name, value, handleChange, stateValue}) => {
+  return (
+  <label>
+    <div>
+    <input
+      name={name}
+      type="checkbox"
+      value={value}
+      checked={stateValue.indexOf(value) !== -1}
+      onChange={handleChange}
+    /> {value}
+    </div>
+  </label>
+)
+}
+const CheckBoxes = ({options, handleChange, name, stateValue}) => {
+  return (
+    <div>
+      {options.map((option) => <CheckBoxOption
+          key={option} value={option} {...{name, handleChange, stateValue}}
+        />
+      )}
+    </div>
+  );
+}
+
+const RadioOption = ({name, value, handleChange, stateValue}) => (
+  <label>
+    <div>
+    <input
+      name={name}
+      type="radio"
+      value={value}
+      checked={value === stateValue}
+      onChange={handleChange}
+    /> {value}
+    </div>
+  </label>
+)
+
+const RadioOptions = ({options, handleChange, name, stateValue}) => {
+  return (
+    <div>
+      {options.map((option) => <RadioOption
+          key={option} value={option} {...{name, handleChange, stateValue}}
+        />
+      )}
+    </div>
+  );
+}
+
+const NumPad = ({handleChange, value}) => {
+  return (
+    <div className="question question--left">
+      <p className="question__text">Máte na počítači numerickú klávesnicu (číselná klávesnica vpravo/numpad)? Zvyknete ju používať?</p>
+      <div>
+        <label>
+          <input
+            name="numpad"
+            type="radio"
+            value="1"
+            checked={value === '1'}
+            onChange={handleChange}
+          /> Áno, mám, a zvyknem ju používať
+        </label>
+        <br/>
+        <label>
+          <input
+            name="numpad"
+            type="radio"
+            value="2"
+            checked={value === '2'}
+            onChange={handleChange}
+          /> Áno, mám, ale nepoužívam ju alebo ju používam len výnimočne
+        </label>
+        <br/>
+        <label>
+          <input
+            name="numpad"
+            type="radio"
+            value="0"
+            checked={value === '0'}
+            onChange={handleChange}
+          /> Nie, nemám
+        </label>
+      </div>
+    </div>
+  )
+}
+
 
 const LikertOption = ({number, checkedNumber, handleChange}) => (
   <label className="likert--col">

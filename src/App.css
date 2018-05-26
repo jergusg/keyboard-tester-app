@@ -95,18 +95,20 @@ input, textarea, select, button {
 
 .question {
   margin-top: 50px;
+  text-align: left;
 }
-
 .question__text {
   margin-bottom: 10px;
   text-align: left;
+  font-weight: bold;
 }
 
 .question__input {
-  width: 100%;
+  width: 300px;
 }
 
 .likert {
+  text-align: center;
   display: flex;
   width: 100%;
   margin: 0 auto;
@@ -141,10 +143,6 @@ td, th {
 
 tbody tr:nth-child(odd) {
   background-color: #dddddd;
-}
-
-tbody tr:nth-child(1) {
-  color: #9c9c9c;
 }
 
 .thank-you {

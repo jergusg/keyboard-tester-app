@@ -131,9 +131,9 @@ class Tester extends React.Component {
         // Update vectors
         timesVector: timesVector.concat(newTime), 
         strokesVector: strokesVector.concat(newStrokes),
-        keydownCodeVector: keydownCodeVector.concat(keydownCode),
-        keydownKeyVector: keydownKeyVector.concat(keydownKey),
-        keydownTimeVector: keydownTimeVector.concat(keydownTime),
+        keydownCodeVector: keydownCodeVector.concat([keydownCode]),
+        keydownKeyVector: keydownKeyVector.concat([keydownKey]),
+        keydownTimeVector: keydownTimeVector.concat([keydownTime]),
       });
       // Finished Last Sentence
       if (sentenceNum + 1 === allSentences) {
