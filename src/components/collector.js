@@ -141,7 +141,7 @@ class Collector extends React.Component {
         {appScreen === APP_SCREENS.EMAIL_SCREEN &&
           <div>
             <h2>Výskum písania na klávesnici</h2>
-            <p>Moje meno je Jerguš Greššák a robím výskum zameraný na prepínanie medzi slovenským a anglickým rozložením klávesnice. Testovanie zaberie 10 minút. Prosím, spravte si čas, aby vás nikto nerušil.</p>
+            <p>Moje meno je Jerguš Greššák a robím výskum zameraný na prepínanie medzi slovenským a anglickým rozložením klávesnice. Testovanie zaberie 10 minút a potrebujete naň počítač s klávesnicou. Prosím, spravte si čas, aby vás nikto nerušil.</p>
             <div className="email-form">
               <span className="prompt">Email alebo Meno: </span>
               <input
