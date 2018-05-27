@@ -202,9 +202,11 @@ tbody tr:nth-child(odd) {
 }
 
 .badPart {
-  color: darkred;
+  color: pink;
+  background: pink;  
   font-weight: normal;
   position: absolute;
+  z-index: -1;
 }
 
 .black {
