@@ -36,18 +36,21 @@ input, textarea, select, button {
 
 .App-header {
   background-color: #222;
-  height: 50px;
-  padding: 20px;
+  /* height: 50px; */
+  padding: 8px;
   color: white;
   margin-bottom: 40px;
 }
 
-.App-title {
-  font-size: 1.5em;
+.moj-mail {
+  font-weight: normal;
+  font-size: 80%;
+  margin-top: 5px;
 }
 
-.App-intro {
-  font-size: large;
+.App-title {
+  font-size: 1.5em;
+  margin-bottom: 5px;
 }
 
 /* --- Original end --- */

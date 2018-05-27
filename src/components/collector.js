@@ -141,9 +141,9 @@ class Collector extends React.Component {
         {appScreen === APP_SCREENS.EMAIL_SCREEN &&
           <div>
             <h2>Výskum písania na klávesnici</h2>
-            <p>Moje meno je Jerguš Greššák a robím výskum zameraný na prepínanie medzi slovenským a anglickým rozložením klávesnice. Testovanie zaberie 10 minút a potrebujete naň počítač s klávesnicou. Prosím, spravte si čas, aby vás nikto nerušil.</p>
+            <p>Moje meno je Jerguš Greššák a robím výskum zameraný na prepínanie medzi rozloženiami klávesnice. Zúčastnite sa, ak máte prax s písaním kódu a je vám známe pomerne časté prepínanie medzi slovenským a anglickým rozložením. Testovanie zaberie 10 minút a potrebujete naň počítač s klávesnicou. Spravte si prosím čas, aby vás nikto nerušil. V prípade problémov ma kontaktujte na mail v záhlaví stránky.</p>
             <div className="email-form">
-              <span className="prompt">Email alebo Meno: </span>
+              <span className="prompt">Email: </span>
               <input
                 onChange={this.handleEmailChange}
                 type="text"
