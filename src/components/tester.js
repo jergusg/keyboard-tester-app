@@ -24,6 +24,8 @@ class Tester extends React.Component {
           ({
             userTimes: [],
             userStrokes: [],
+            userChangesAll: [],
+            userChangesTimesAll: [],
             sentenceLengths: [],
             evKeydownCode: [], 
             evKeydownKey: [],
@@ -44,6 +46,8 @@ class Tester extends React.Component {
       inputStrokes: 0,
       timesVector: [],
       strokesVector: [],
+      userChangesRound: [],
+      userChangesTimesRound: [],
       keydownCodeVector: [], 
       keydownKeyVector: [],
       keydownTimeVector: [],
@@ -69,8 +73,10 @@ class Tester extends React.Component {
     }), () => this.prepareNextRound(0))
   }
 
+  // As I have one round this happens only once
   updateUserData = (timesVector, strokesVector) => {
     const {testingSetNum, roundNum, keydownCodeVector, keydownKeyVector, keydownTimeVector} = this.state;
+    const {userChangesRound, userChangesTimesRound} = this.state
     const testingSet = this.props.testingSets[testingSetNum]
     this.setState((prevState) =>
       update(prevState, {
@@ -79,6 +85,8 @@ class Tester extends React.Component {
           [testingSetNum] : {
             userTimes: {$push: [timesVector]},
             userStrokes: {$push: [strokesVector]},
+            userChangesAll: {$push: [userChangesRound]},
+            userChangesTimesAll: {$push: [userChangesTimesRound]},
             sentenceLengths: {$push: [testingSet.set[roundNum].map(
               (sentence) => sentence.length
             )]},
@@ -101,6 +109,8 @@ class Tester extends React.Component {
       inputStrokes,
       timesVector,
       strokesVector,
+      userChangesRound,
+      userChangesTimesRound,
       modelSentence,
       testingSetNum,
       keydownCodeVector,
@@ -109,6 +119,9 @@ class Tester extends React.Component {
       keydownCode,
       keydownKey,
       keydownTime,
+      userChangesSentence,
+      userChangesTimesSentence,
+      changeTime,
     } = this.state;
     const testingSet = this.props.testingSets[testingSetNum];
     if (testerState !== T_STATES.RUNNING) return;
@@ -119,9 +132,13 @@ class Tester extends React.Component {
     if (textLengthDiff > 1 && !this.props.devMode) {
       return;
     }
+
     this.setState({
       inputText: newInputText,
       inputStrokes: newStrokes,
+      changeTime: Date.now(),
+      userChangesSentence: userChangesSentence.concat(newInputText),
+      userChangesTimesSentence: userChangesTimesSentence.concat(Date.now() - changeTime),
     });
 
     if (newInputText === modelSentence) {
@@ -131,6 +148,8 @@ class Tester extends React.Component {
         // Update vectors
         timesVector: timesVector.concat(newTime), 
         strokesVector: strokesVector.concat(newStrokes),
+        userChangesRound: userChangesRound.concat([userChangesSentence.concat(newInputText)]),
+        userChangesTimesRound: userChangesTimesRound.concat([userChangesTimesSentence.concat(Date.now() - changeTime)]),
         keydownCodeVector: keydownCodeVector.concat([keydownCode]),
         keydownKeyVector: keydownKeyVector.concat([keydownKey]),
         keydownTimeVector: keydownTimeVector.concat([keydownTime]),
@@ -158,11 +177,14 @@ class Tester extends React.Component {
       startTimePoint: Date.now(),
       inputText: '',
       inputStrokes: 0,
+      userChangesSentence: [''],
+      userChangesTimesSentence: [],
       modelLeaveClass: false,
       keydownCode: [], 
       keydownKey: [],
       keydownTime: [],
       letterTime: Date.now(),
+      changeTime: Date.now(),
     }));
   }
 

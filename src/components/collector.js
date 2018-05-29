@@ -71,7 +71,6 @@ class Collector extends React.Component {
   }
 
   pushUserAnswer = (userAnswer) => {
-    console.log('pushAnswer');
     this.setState({userAnswer: userAnswer, appScreen: APP_SCREENS.TESTER_SCREEN});
   }
 
@@ -181,7 +180,6 @@ class Collector extends React.Component {
 
 
 const FinishResults = ({score}) => {
-  console.log(score)
   let rows = []
   for (let i = 1; i < score.speedList.length; i++) {
     rows.push(<tr key={i}>
